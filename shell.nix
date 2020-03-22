@@ -24,7 +24,13 @@ let
 in nixpkgs.mkShell {
   buildInputs = [
     dhall-haskell.dhall
+    dhall-haskell.dhall-json
+    nixpkgs.awscli
+    nixpkgs.bash
+    nixpkgs.coreutils
     nixpkgs.git
+    nixpkgs.jq
+    nixpkgs.kubectl
     nixpkgs.vault
   ];
 }

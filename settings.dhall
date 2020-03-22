@@ -12,7 +12,7 @@ let Config = ./config/package.dhall
 
 let name = "vault"
 
-let version = "1.3.3"
+let metadata = ./metadata.dhall
 
 let ConfigTemplate =
       let Options =
@@ -26,7 +26,12 @@ let ConfigTemplate =
                 }
             }
 
-      let ConfigTemplate = < AWS-Simple : Options.AWS-Simple.Type >
+      let ConfigTemplate =
+          {- Generally this is populated by the owning context, in config.template.
+          -- All user configuration should be defined elsewhere and then populated in
+          -- the Settings object at config.override by the owning context.
+          -}
+            < AWS-Simple : Options.AWS-Simple.Type >
 
       let exports =
           {- the AWS-Simple export is provided as a helper.
@@ -46,6 +51,23 @@ let ConfigTemplate =
 
 let Port = { Type = { name : Text, number : Natural }, default = {=} }
 
+let ServiceMonitor =
+      let Options =
+            { Enabled =
+                { Type = { scrape-identifier : Prelude.Map.Type Text Text }
+                , default = {=}
+                }
+            }
+
+      let ServiceMonitor = < Enabled : Options.Enabled.Type | Disabled >
+
+      in  { Type = ServiceMonitor
+          , Enabled =
+              λ(enabled : Options.Enabled.Type) → ServiceMonitor.Enabled enabled
+          , Disabled = ServiceMonitor.Disabled
+          , Options = Options
+          }
+
 let Settings =
       let Settings =
             { Type =
@@ -58,13 +80,19 @@ let Settings =
                 , additional-labels : Prelude.Map.Type Text Text
                 , image : Image.Type
                 , ports : { api : Port.Type, cluster-coordination : Port.Type }
+                , service-monitor : ServiceMonitor.Type
                 }
             , default =
                 { config.override =
                     Prelude.Function.identity Config.VaultConfig.Type
                 , namespace = None Text
                 , additional-labels = Prelude.Map.empty Text Text
-                , image = Image.Tag { name = name, tag = version }
+                , image =
+                    Image.Tag
+                      { registry = "registry.hub.docker.com"
+                      , name = "library/vault"
+                      , tag = metadata.version.vault
+                      }
                 , ports =
                     { api = Port::{ name = "api", number = 8200 }
                     , cluster-coordination = Port::{
@@ -72,6 +100,7 @@ let Settings =
                       , number = 8201
                       }
                     }
+                , service-monitor = ServiceMonitor.Disabled
                 }
             }
 
@@ -148,45 +177,56 @@ let Settings =
 
             let kubernetes =
                   { metadata =
-                      { name = name
-                      , labels =
-                          let kubernetes-standard =
-                                { component =
-                                    Prelude.Map.keyText
-                                      "app.kubernetes.io/component"
-                                      "vault"
-                                , managed-by =
-                                    Prelude.Map.keyText
-                                      "app.kubernetes.io/managed-by"
-                                      "dhall"
-                                , name =
-                                    Prelude.Map.keyText
-                                      "app.kubernetes.io/name"
-                                      name
-                                , version =
-                                    Prelude.Map.keyText
-                                      "app.kubernetes.io/version"
-                                      version
+                      let labels =
+                            let kubernetes-standard =
+                                  { component =
+                                      Prelude.Map.keyText
+                                        "app.kubernetes.io/component"
+                                        "vault"
+                                  , managed-by =
+                                      Prelude.Map.keyText
+                                        "app.kubernetes.io/managed-by"
+                                        "dhall"
+                                  , name =
+                                      Prelude.Map.keyText
+                                        "app.kubernetes.io/name"
+                                        name
+                                  , version =
+                                      Prelude.Map.keyText
+                                        "app.kubernetes.io/version"
+                                        "${metadata.version.vault}-${metadata.version.package}"
+                                  }
+
+                            let selector =
+                                    λ(settings : Settings.Type)
+                                  →   [ kubernetes-standard.name ]
+                                    # settings.additional-labels
+
+                            let package =
+                                    λ(settings : Settings.Type)
+                                  →   selector settings
+                                    # [ kubernetes-standard.component
+                                      , kubernetes-standard.managed-by
+                                      , kubernetes-standard.version
+                                      ]
+
+                            in  { kubernetes-standard = kubernetes-standard
+                                , selector = selector
+                                , package = package
                                 }
 
-                          let selector =
-                                  λ(settings : Settings.Type)
-                                →   [ kubernetes-standard.name ]
-                                  # settings.additional-labels
-
-                          let package =
-                                  λ(settings : Settings.Type)
-                                →   selector settings
-                                  # [ kubernetes-standard.component
-                                    , kubernetes-standard.managed-by
-                                    , kubernetes-standard.version
-                                    ]
-
-                          in  { kubernetes-standard = kubernetes-standard
-                              , selector = selector
-                              , package = package
+                      let object-meta =
+                              λ(settings : Settings.Type)
+                            → Kubernetes.ObjectMeta::{
+                              , name = name
+                              , namespace = settings.namespace
+                              , labels = Some (labels.package settings)
                               }
-                      }
+
+                      in  { name = name
+                          , labels = labels
+                          , object-meta = object-meta
+                          }
                   }
 
             in  { config = config, kubernetes = kubernetes }
@@ -246,6 +286,11 @@ let Settings =
 
       in  Settings ∧ { common = common }
 
-let exports = Settings ∧ { ConfigTemplate = ConfigTemplate, Port = Port }
+let exports =
+        Settings
+      ∧ { ConfigTemplate = ConfigTemplate
+        , Port = Port
+        , ServiceMonitor = ServiceMonitor
+        }
 
 in  exports

@@ -4,9 +4,11 @@ let Prelude = imports.Prelude
 
 let JSON = Prelude.JSON
 
-let hcl = ./hcl-util.dhall
+let UtilityLibrary = imports.UtilityLibrary
 
-let Duration = hcl.Duration
+let Duration = UtilityLibrary.golang.Duration
+
+let hcl-render = UtilityLibrary.hcl.render
 
 let Common =
     {- No matter which metrics provider(s) is/are chosen, these
@@ -22,7 +24,8 @@ let Common =
                   λ(common : Common.Type)
                 → toMap
                     { disable_hostname =
-                        hcl.render.json.optional.bool common.disable_hostname
+                        hcl-render.helpers.json.optional.bool
+                          common.disable_hostname
                     }
             }
 
@@ -45,7 +48,7 @@ let Providers =
                         λ(prometheus : Prometheus.Type)
                       → toMap
                           { prometheus_retention_time =
-                              hcl.render.json.optional.duration
+                              hcl-render.helpers.json.optional.duration
                                 prometheus.retention_time
                           }
                   }

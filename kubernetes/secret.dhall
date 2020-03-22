@@ -6,12 +6,7 @@ let Settings = ../settings.dhall
 
 in    λ(settings : Settings.Type)
     → Kubernetes.Secret::{
-      , metadata = Kubernetes.ObjectMeta::{
-        , name = Settings.common.kubernetes.metadata.name
-        , namespace = settings.namespace
-        , labels = Some
-            (Settings.common.kubernetes.metadata.labels.package settings)
-        }
+      , metadata = Settings.common.kubernetes.metadata.object-meta settings
       , type = Some "Opaque"
       , stringData = Some
           ( merge

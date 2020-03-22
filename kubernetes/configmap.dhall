@@ -10,12 +10,7 @@ let Config = ../config/package.dhall
 
 in    λ(settings : Settings.Type)
     → Kubernetes.ConfigMap::{
-      , metadata = Kubernetes.ObjectMeta::{
-        , name = Settings.common.kubernetes.metadata.name
-        , namespace = settings.namespace
-        , labels = Some
-            (Settings.common.kubernetes.metadata.labels.package settings)
-        }
+      , metadata = Settings.common.kubernetes.metadata.object-meta settings
       , data = Some
           ( toMap
               { `config.json` =

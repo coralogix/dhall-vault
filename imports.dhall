@@ -5,7 +5,7 @@
 , Kubernetes =
     https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/506d633e382872346927b8cb9884d8b7382e6cab/package.dhall sha256:d9eac5668d5ed9cb3364c0a39721d4694e4247dad16d8a82827e4619ee1d6188
 , Prometheus =
-    https://raw.githubusercontent.com/coralogix/dhall-prometheus-operator/v3.1.1/package.dhall sha256:1160d4c0f3d0f4750dd1644b2ba8351b197ebad4b1f577b42e7ae590f4706726
+    https://raw.githubusercontent.com/coralogix/dhall-prometheus-operator/v4.0.0/package.dhall sha256:bcfe5eed190f43f737a09bb2e40975cfd6fabc1f026c6475b012c263502a6210
 , UtilityLibrary =
-    https://raw.githubusercontent.com/coralogix/dhall-utility-library/v0.2.0/package.dhall sha256:1563b55128cbf03426dcc224188f97810636836f52ff62ac0a5ffc11f6c028d9
+    https://raw.githubusercontent.com/coralogix/dhall-utility-library/v0.4.1/package.dhall sha256:4cd1d3b99bacce564563aeec827b9cb988496795d82431716a913ff31d049128
 }

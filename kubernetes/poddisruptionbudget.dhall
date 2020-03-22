@@ -8,12 +8,7 @@ let Settings = ../settings.dhall
 
 in    λ(settings : Settings.Type)
     → Kubernetes.PodDisruptionBudget::{
-      , metadata = Kubernetes.ObjectMeta::{
-        , name = Settings.common.kubernetes.metadata.name
-        , namespace = settings.namespace
-        , labels = Some
-            (Settings.common.kubernetes.metadata.labels.package settings)
-        }
+      , metadata = Settings.common.kubernetes.metadata.object-meta settings
       , spec = Some Kubernetes.PodDisruptionBudgetSpec::{
         , maxUnavailable = Some (Kubernetes.IntOrString.Int 1)
         , selector = Some Kubernetes.LabelSelector::{

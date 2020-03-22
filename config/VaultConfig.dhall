@@ -4,9 +4,11 @@ let Prelude = imports.Prelude
 
 let JSON = Prelude.JSON
 
-let hcl = ./hcl-util.dhall
+let UtilityLibrary = imports.UtilityLibrary
 
-let Duration = hcl.Duration
+let Duration = UtilityLibrary.golang.Duration
+
+let hcl-render = UtilityLibrary.hcl.render
 
 let StorageBackend = ./StorageBackend.dhall
 
@@ -103,59 +105,62 @@ let VaultConfig =
                             { storage =
                                 StorageBackend.All.render.json config.storage
                             , ha_storage =
-                                hcl.render.json.optional.generic
+                                hcl-render.helpers.json.optional.generic
                                   StorageBackend.HighAvailability.Type
                                   StorageBackend.HighAvailability.render.json
                                   config.ha_storage
                             , listener = Listener.render.json config.listener
                             , seal =
-                                hcl.render.json.optional.generic
+                                hcl-render.helpers.json.optional.generic
                                   Seal.Type
                                   Seal.render.json
                                   config.seal
                             , cluster_name =
-                                hcl.render.json.optional.text
+                                hcl-render.helpers.json.optional.text
                                   config.cluster_name
                             , cache_size =
-                                hcl.render.json.optional.natural
+                                hcl-render.helpers.json.optional.natural
                                   config.cache_size
                             , disable_cache =
                                 render-optional-bool config.disable_cache
                             , disable_mlock =
                                 render-optional-bool config.disable_mlock
                             , plugin_directory =
-                                hcl.render.json.optional.text
+                                hcl-render.helpers.json.optional.text
                                   config.plugin_directory
                             , telemetry =
-                                hcl.render.json.optional.generic
+                                hcl-render.helpers.json.optional.generic
                                   Telemetry.Type
                                   Telemetry.render.json
                                   config.telemetry
                             , log_level =
-                                hcl.render.json.optional.text config.log_level
+                                hcl-render.helpers.json.optional.text
+                                  config.log_level
                             , log_format =
-                                hcl.render.json.optional.generic
+                                hcl-render.helpers.json.optional.generic
                                   LogFormat.Type
                                   LogFormat.render.json
                                   config.log_format
                             , default_lease_ttl =
-                                hcl.render.json.optional.duration
+                                hcl-render.helpers.json.optional.duration
                                   config.default_lease_ttl
                             , max_lease_ttl =
-                                hcl.render.json.optional.duration
+                                hcl-render.helpers.json.optional.duration
                                   config.max_lease_ttl
                             , default_max_request_duration =
-                                hcl.render.json.optional.duration
+                                hcl-render.helpers.json.optional.duration
                                   config.default_max_request_duration
                             , raw_storage_endpoint =
                                 render-optional-bool config.raw_storage_endpoint
                             , ui = render-optional-bool config.ui
                             , pid_file =
-                                hcl.render.json.optional.text config.pid_file
+                                hcl-render.helpers.json.optional.text
+                                  config.pid_file
                             , api_addr =
-                                hcl.render.json.optional.text config.api_addr
+                                hcl-render.helpers.json.optional.text
+                                  config.api_addr
                             , cluster_addr =
-                                hcl.render.json.optional.text
+                                hcl-render.helpers.json.optional.text
                                   config.cluster_addr
                             , disable_clustering =
                                 render-optional-bool config.disable_clustering

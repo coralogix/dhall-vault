@@ -4,7 +4,9 @@ let Prelude = imports.Prelude
 
 let JSON = Prelude.JSON
 
-let hcl = ./hcl-util.dhall
+let UtilityLibrary = imports.UtilityLibrary
+
+let hcl-render = UtilityLibrary.hcl.render
 
 let Options =
     {- While Vault supports many storage backends, only a select few have been
@@ -138,33 +140,35 @@ let Options =
                                 ( toMap
                                     { bucket = JSON.string s3.bucket
                                     , endpoint =
-                                        hcl.render.json.optional.text
+                                        hcl-render.helpers.json.optional.text
                                           s3.endpoint
                                     , region =
-                                        hcl.render.json.optional.text s3.region
+                                        hcl-render.helpers.json.optional.text
+                                          s3.region
                                     , access_key =
-                                        hcl.render.json.optional.text
+                                        hcl-render.helpers.json.optional.text
                                           s3.access_key
                                     , secret_key =
-                                        hcl.render.json.optional.text
+                                        hcl-render.helpers.json.optional.text
                                           s3.secret_key
                                     , session_token =
-                                        hcl.render.json.optional.text
+                                        hcl-render.helpers.json.optional.text
                                           s3.session_token
                                     , max_parallel =
-                                        hcl.render.json.optional.natural
+                                        hcl-render.helpers.json.optional.natural
                                           s3.max_parallel
                                     , s3_force_path_style =
-                                        hcl.render.json.optional.bool
+                                        hcl-render.helpers.json.optional.bool
                                           s3.s3_force_path_style
                                     , disable_ssl =
-                                        hcl.render.json.optional.bool
+                                        hcl-render.helpers.json.optional.bool
                                           s3.disable_ssl
                                     , kms_key_id =
-                                        hcl.render.json.optional.text
+                                        hcl-render.helpers.json.optional.text
                                           s3.kms_key_id
                                     , path =
-                                        hcl.render.json.optional.text s3.path
+                                        hcl-render.helpers.json.optional.text
+                                          s3.path
                                     }
                                 )
                         }

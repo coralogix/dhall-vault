@@ -4,7 +4,9 @@ let Prelude = imports.Prelude
 
 let JSON = Prelude.JSON
 
-let hcl = ./hcl-util.dhall
+let UtilityLibrary = imports.UtilityLibrary
+
+let hcl-render = UtilityLibrary.hcl.render
 
 let Options =
     {- Vault supports a variety of seal management mechanisms.
@@ -43,20 +45,20 @@ let Options =
                           → JSON.object
                               ( toMap
                                   { region =
-                                      hcl.render.json.optional.text
+                                      hcl-render.helpers.json.optional.text
                                         aws-kms.region
                                   , access_key =
-                                      hcl.render.json.optional.text
+                                      hcl-render.helpers.json.optional.text
                                         aws-kms.access_key
                                   , session_token =
-                                      hcl.render.json.optional.text
+                                      hcl-render.helpers.json.optional.text
                                         aws-kms.session_token
                                   , secret_key =
-                                      hcl.render.json.optional.text
+                                      hcl-render.helpers.json.optional.text
                                         aws-kms.secret_key
                                   , kms_key_id = JSON.string aws-kms.kms_key_id
                                   , endpoint =
-                                      hcl.render.json.optional.text
+                                      hcl-render.helpers.json.optional.text
                                         aws-kms.endpoint
                                   }
                               )
