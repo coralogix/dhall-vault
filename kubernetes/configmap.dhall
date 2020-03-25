@@ -4,7 +4,7 @@ let JSON = imports.Prelude.JSON
 
 let Kubernetes = imports.Kubernetes
 
-let Settings = ../settings.dhall
+let Settings = ../Settings.dhall
 
 let Config = ../config/package.dhall
 

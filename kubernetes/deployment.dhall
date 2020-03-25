@@ -8,7 +8,7 @@ let UtilityLibrary = imports.UtilityLibrary
 
 let Image = UtilityLibrary.kubernetes.Image
 
-let Settings = ../settings.dhall
+let Settings = ../Settings.dhall
 
 in    λ(settings : Settings.Type)
     → λ(references : { configmap : { name : Text }, secret : { name : Text } })

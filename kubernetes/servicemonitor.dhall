@@ -6,7 +6,7 @@ let Kubernetes = imports.Kubernetes
 
 let Prometheus = imports.Prometheus.v1
 
-let Settings = ../settings.dhall
+let Settings = ../Settings.dhall
 
 in    λ(settings : Settings.Type)
     → Prometheus.ServiceMonitor::{

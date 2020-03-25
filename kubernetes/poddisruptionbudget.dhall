@@ -4,7 +4,7 @@ let Kubernetes = imports.Kubernetes
 
 let Prelude = imports.Prelude
 
-let Settings = ../settings.dhall
+let Settings = ../Settings.dhall
 
 in    λ(settings : Settings.Type)
     → Kubernetes.PodDisruptionBudget::{

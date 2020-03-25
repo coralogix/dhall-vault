@@ -1,4 +1,4 @@
-let Settings = ../settings.dhall
+let Settings = ../Settings.dhall
 
 in    λ(settings : Settings.Type)
     → let poddisruptionbudget = ./poddisruptionbudget.dhall settings

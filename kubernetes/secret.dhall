@@ -2,7 +2,7 @@ let imports = ../imports.dhall
 
 let Kubernetes = imports.Kubernetes
 
-let Settings = ../settings.dhall
+let Settings = ../Settings.dhall
 
 in    λ(settings : Settings.Type)
     → Kubernetes.Secret::{
