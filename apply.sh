@@ -3,7 +3,7 @@
 function main {
   set -euo pipefail
 
-  local dhall_vault_dir=$(realpath "${1}")
+  local dhall_vault_package=$(realpath "${1}")
   local dhall_vault_output=$(realpath "${2}")
   local vault_settings_dhall=$(realpath "${3}")
   local kubectl_context="${4}"
@@ -16,7 +16,7 @@ function main {
 
   # For brevity's sake, assume AWS-Simple
   local dhall_settings_aws_simple=$(dhall-to-json <<EOF
-let Settings = (${dhall_vault_dir})/settings.dhall
+let Settings = (${dhall_vault_package}).Settings
 in merge { AWS-Simple = \\(options: Settings.ConfigTemplate.Options.AWS-Simple.Type) -> options } (${vault_settings_dhall})
 EOF
 )
@@ -81,7 +81,7 @@ EOF
   local rendered_json="${dhall_vault_output}/kubernetes-rendered.json"
   mkdir -p "${dhall_vault_output}/kubernetes-rendered-objects/"
   echo >&2 -n "[INFO][dhall-vault][apply.sh][step: installation] Rendering kubernetes/package.dhall to ${rendered_json} ... "
-  dhall-to-json <<< "${dhall_vault_dir}/kubernetes/package.dhall (${vault_settings_dhall})" > "${rendered_json}"
+  dhall-to-json <<< "(${dhall_vault_package}).kubernetes (${vault_settings_dhall})" > "${rendered_json}"
   echo >&2 "done!"
 
   for kubernetes_object in $(jq -r '.objects[]' < "${rendered_json}") ; do
