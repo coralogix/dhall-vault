@@ -33,7 +33,9 @@ let Options =
                                           Filesystem::{ path = "example" }
                                       )
                                   )
-                              ≡ "{ \"path\": \"example\" }"
+                              ≡ ''
+                                { "path": "example" }
+                                ''
                         }
 
                   in  render
@@ -58,7 +60,9 @@ let Options =
                                   ( JSON.omitNullFields
                                       (render.json InMemory::{=})
                                   )
-                              ≡ "{ }"
+                              ≡ ''
+                                {}
+                                ''
                         }
 
                   in  render
@@ -93,7 +97,12 @@ let Options =
                                           }
                                       )
                                   )
-                              ≡ "{ \"node_id\": \"bar\", \"path\": \"foo\" }"
+                              ≡ ''
+                                {
+                                  "node_id": "bar",
+                                  "path": "foo"
+                                }
+                                ''
                         }
 
                   in  render
@@ -116,17 +125,17 @@ let Options =
                       , path : Optional Text
                       }
                   , default =
-                      { endpoint = None Text
-                      , region = None Text
-                      , access_key = None Text
-                      , secret_key = None Text
-                      , session_token = None Text
-                      , max_parallel = None Natural
-                      , s3_force_path_style = None Bool
-                      , disable_ssl = None Bool
-                      , kms_key_id = None Text
-                      , path = None Text
-                      }
+                    { endpoint = None Text
+                    , region = None Text
+                    , access_key = None Text
+                    , secret_key = None Text
+                    , session_token = None Text
+                    , max_parallel = None Natural
+                    , s3_force_path_style = None Bool
+                    , disable_ssl = None Bool
+                    , kms_key_id = None Text
+                    , path = None Text
+                    }
                   }
 
             let test = { create-minimal = S3::{ bucket = "example" } }
@@ -180,7 +189,9 @@ let Options =
                                   ( JSON.omitNullFields
                                       (render.json S3::{ bucket = "foo" })
                                   )
-                              ≡ "{ \"bucket\": \"foo\" }"
+                              ≡ ''
+                                { "bucket": "foo" }
+                                ''
                         }
 
                   in  render

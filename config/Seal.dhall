@@ -29,40 +29,40 @@ let Options =
                       , endpoint : Optional Text
                       }
                   , default =
-                      { region = None Text
-                      , access_key = None Text
-                      , session_token = None Text
-                      , secret_key = None Text
-                      , endpoint = None Text
-                      }
+                    { region = None Text
+                    , access_key = None Text
+                    , session_token = None Text
+                    , secret_key = None Text
+                    , endpoint = None Text
+                    }
                   }
 
             in    AWS-KMS
                 ∧ { render =
-                      { hcl-type = λ(_ : AWS-KMS.Type) → "awskms"
-                      , json =
-                            λ(aws-kms : AWS-KMS.Type)
-                          → JSON.object
-                              ( toMap
-                                  { region =
-                                      hcl-render.helpers.json.optional.text
-                                        aws-kms.region
-                                  , access_key =
-                                      hcl-render.helpers.json.optional.text
-                                        aws-kms.access_key
-                                  , session_token =
-                                      hcl-render.helpers.json.optional.text
-                                        aws-kms.session_token
-                                  , secret_key =
-                                      hcl-render.helpers.json.optional.text
-                                        aws-kms.secret_key
-                                  , kms_key_id = JSON.string aws-kms.kms_key_id
-                                  , endpoint =
-                                      hcl-render.helpers.json.optional.text
-                                        aws-kms.endpoint
-                                  }
-                              )
-                      }
+                    { hcl-type = λ(_ : AWS-KMS.Type) → "awskms"
+                    , json =
+                          λ(aws-kms : AWS-KMS.Type)
+                        → JSON.object
+                            ( toMap
+                                { region =
+                                    hcl-render.helpers.json.optional.text
+                                      aws-kms.region
+                                , access_key =
+                                    hcl-render.helpers.json.optional.text
+                                      aws-kms.access_key
+                                , session_token =
+                                    hcl-render.helpers.json.optional.text
+                                      aws-kms.session_token
+                                , secret_key =
+                                    hcl-render.helpers.json.optional.text
+                                      aws-kms.secret_key
+                                , kms_key_id = JSON.string aws-kms.kms_key_id
+                                , endpoint =
+                                    hcl-render.helpers.json.optional.text
+                                      aws-kms.endpoint
+                                }
+                            )
+                    }
                   }
 
       in  { AWS-KMS = AWS-KMS }
@@ -91,7 +91,9 @@ let test =
                         )
                     )
                 )
-            ≡ "{ \"awskms\": { \"kms_key_id\": \"example\" } }"
+            ≡ ''
+              { "awskms": { "kms_key_id": "example" } }
+              ''
       }
 
 let exports =

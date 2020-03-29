@@ -62,9 +62,9 @@ let Telemetry =
                 , prometheus : Optional Providers.Prometheus.Type
                 }
             , default =
-                { common = None Common.Type
-                , prometheus = None Providers.Prometheus.Type
-                }
+              { common = None Common.Type
+              , prometheus = None Providers.Prometheus.Type
+              }
             }
 
       in    Telemetry
@@ -104,7 +104,9 @@ let Telemetry =
                                         }
                                     )
                                 )
-                            ≡ "{ \"prometheus_retention_time\": \"24h\" }"
+                            ≡ ''
+                              { "prometheus_retention_time": "24h" }
+                              ''
                       }
 
                 in  render

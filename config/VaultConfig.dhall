@@ -65,28 +65,28 @@ let VaultConfig =
                 , disable_performance_standby : Optional Bool
                 }
             , default =
-                { ha_storage = None StorageBackend.HighAvailability.Type
-                , seal = None Seal.Type
-                , cluster_name = None Text
-                , cache_size = None Natural
-                , disable_cache = None Bool
-                , disable_mlock = None Bool
-                , plugin_directory = None Text
-                , telemetry = None Telemetry.Type
-                , log_level = None Text
-                , log_format = None LogFormat.Type
-                , default_lease_ttl = None Duration.Type
-                , max_lease_ttl = None Duration.Type
-                , default_max_request_duration = None Duration.Type
-                , raw_storage_endpoint = None Bool
-                , ui = None Bool
-                , pid_file = None Text
-                , api_addr = None Text
-                , cluster_addr = None Text
-                , disable_clustering = None Bool
-                , disable_sealwrap = None Bool
-                , disable_performance_standby = None Bool
-                }
+              { ha_storage = None StorageBackend.HighAvailability.Type
+              , seal = None Seal.Type
+              , cluster_name = None Text
+              , cache_size = None Natural
+              , disable_cache = None Bool
+              , disable_mlock = None Bool
+              , plugin_directory = None Text
+              , telemetry = None Telemetry.Type
+              , log_level = None Text
+              , log_format = None LogFormat.Type
+              , default_lease_ttl = None Duration.Type
+              , max_lease_ttl = None Duration.Type
+              , default_max_request_duration = None Duration.Type
+              , raw_storage_endpoint = None Bool
+              , ui = None Bool
+              , pid_file = None Text
+              , api_addr = None Text
+              , cluster_addr = None Text
+              , disable_clustering = None Bool
+              , disable_sealwrap = None Bool
+              , disable_performance_standby = None Bool
+              }
             }
 
       in    VaultConfig
@@ -187,7 +187,12 @@ let tests =
                         }
                     )
                 )
-            ≡ "{ \"listener\": { \"tcp\": { \"tls_disable\": \"true\" } }, \"storage\": { \"inmem\": { } } }"
+            ≡ ''
+              {
+                "listener": { "tcp": { "tls_disable": "true" } },
+                "storage": { "inmem": {} }
+              }
+              ''
       }
 
 let exports = VaultConfig ∧ { LogFormat = LogFormat }

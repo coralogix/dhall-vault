@@ -318,29 +318,29 @@ let Options =
                           , telemetry : Optional Telemetry.Type
                           }
                       , default =
-                          { address = None Text
-                          , cluster_address = None Text
-                          , http_idle_timeout = None Duration.Type
-                          , http_read_header_timeout = None Duration.Type
-                          , http_read_timeout = None Duration.Type
-                          , http_write_timeout = None Duration.Type
-                          , max_request_size = None Natural
-                          , max_request_duration = None Duration.Type
-                          , proxy_protocol_behavior =
-                              None ProxyProtocolBehavior.Type
-                          , tls = None TLS.Type
-                          , tls_min_version = None TLSMinVersion.Type
-                          , tls_cipher_suites = [] : List TLSCipherSuite.Type
-                          , tls_prefer_server_cipher_suites = None Bool
-                          , tls_require_and_verify_client_cert = None Bool
-                          , tls_client_ca_file = None Text
-                          , tls_disable_client_certs = None Bool
-                          , x_forwarded_for_authorized_addrs = [] : List Text
-                          , x_forwarded_for_hop_skips = None Natural
-                          , x_forwarded_for_reject_not_authorized = None Bool
-                          , x_forwarded_for_reject_not_present = None Bool
-                          , telemetry = None Telemetry.Type
-                          }
+                        { address = None Text
+                        , cluster_address = None Text
+                        , http_idle_timeout = None Duration.Type
+                        , http_read_header_timeout = None Duration.Type
+                        , http_read_timeout = None Duration.Type
+                        , http_write_timeout = None Duration.Type
+                        , max_request_size = None Natural
+                        , max_request_duration = None Duration.Type
+                        , proxy_protocol_behavior =
+                            None ProxyProtocolBehavior.Type
+                        , tls = None TLS.Type
+                        , tls_min_version = None TLSMinVersion.Type
+                        , tls_cipher_suites = [] : List TLSCipherSuite.Type
+                        , tls_prefer_server_cipher_suites = None Bool
+                        , tls_require_and_verify_client_cert = None Bool
+                        , tls_client_ca_file = None Text
+                        , tls_disable_client_certs = None Bool
+                        , x_forwarded_for_authorized_addrs = [] : List Text
+                        , x_forwarded_for_hop_skips = None Natural
+                        , x_forwarded_for_reject_not_authorized = None Bool
+                        , x_forwarded_for_reject_not_present = None Bool
+                        , telemetry = None Telemetry.Type
+                        }
                       , ProxyProtocolBehavior = ProxyProtocolBehavior
                       , TLS = TLS
                       , TLSMinVersion = TLSMinVersion
@@ -350,225 +350,221 @@ let Options =
 
             in    TCP
                 ∧ { render =
-                      { hcl-type = λ(_ : TCP.Type) → "tcp"
-                      , json =
-                            λ(tcp : TCP.Type)
-                          → JSON.object
-                              ( toMap
-                                  { address =
-                                      hcl-render.helpers.json.optional.text
-                                        tcp.address
-                                  , cluster_address =
-                                      hcl-render.helpers.json.optional.text
-                                        tcp.cluster_address
-                                  , http_idle_timeout =
-                                      hcl-render.helpers.json.optional.duration
-                                        tcp.http_idle_timeout
-                                  , http_read_header_timeout =
-                                      hcl-render.helpers.json.optional.duration
-                                        tcp.http_read_header_timeout
-                                  , http_read_timeout =
-                                      hcl-render.helpers.json.optional.duration
-                                        tcp.http_read_timeout
-                                  , http_write_timeout =
-                                      hcl-render.helpers.json.optional.duration
-                                        tcp.http_write_timeout
-                                  , max_request_size =
-                                      hcl-render.helpers.json.optional.natural
-                                        tcp.max_request_size
-                                  , proxy_protocol_behavior =
-                                      hcl-render.helpers.json.optional.generic
-                                        TCP.ProxyProtocolBehavior.Type
-                                        ( Prelude.Function.compose
-                                            TCP.ProxyProtocolBehavior.Type
-                                            Text
-                                            JSON.Type
-                                            TCP.ProxyProtocolBehavior.render.behavior.text
-                                            JSON.string
-                                        )
-                                        tcp.proxy_protocol_behavior
-                                  , proxy_protocol_authorized_addrs =
-                                      merge
-                                        { Some =
-                                            let addresses =
-                                                {- The merge statement below serves to ensure that:
-                                                -- * This field is omitted (`JSON.null`) when `proxy_protocol_behavior`
-                                                --   is `use_always`
-                                                -- * This field is populated with a list of addresses when
-                                                --   `proxy_protocol_behavior` is either `allow_authorized` or
-                                                --   `deny_unauthorized`, and that such a list is guaranteed to
-                                                --   not be empty.
-                                                -}
-                                                    λ ( ppb
-                                                      : TCP.ProxyProtocolBehavior.Type
-                                                      )
-                                                  → let addresses =
-                                                            λ ( addresses
-                                                              : TCP.ProxyProtocolBehavior.Options.Addresses.Type
-                                                              )
-                                                          → JSON.array
-                                                              ( Prelude.List.map
-                                                                  Text
-                                                                  JSON.Type
-                                                                  JSON.string
-                                                                  (   [ addresses.first
-                                                                      ]
-                                                                    # addresses.additional
-                                                                  )
-                                                              )
-
-                                                    in  merge
-                                                          { UseAlways =
-                                                              JSON.null
-                                                          , AllowAuthorized =
-                                                              addresses
-                                                          , DenyUnauthorized =
-                                                              addresses
-                                                          }
-                                                          ppb
-
-                                            let test =
-                                                  { use-always =
-                                                        assert
-                                                      :   addresses
-                                                            TCP.ProxyProtocolBehavior.UseAlways
-                                                        ≡ JSON.null
-                                                  , allow-authorized =
-                                                        assert
-                                                      :   addresses
-                                                            ( TCP.ProxyProtocolBehavior.AllowAuthorized
-                                                                TCP.ProxyProtocolBehavior.Options.Addresses::{
-                                                                , first = "foo"
-                                                                }
+                    { hcl-type = λ(_ : TCP.Type) → "tcp"
+                    , json =
+                          λ(tcp : TCP.Type)
+                        → JSON.object
+                            ( toMap
+                                { address =
+                                    hcl-render.helpers.json.optional.text
+                                      tcp.address
+                                , cluster_address =
+                                    hcl-render.helpers.json.optional.text
+                                      tcp.cluster_address
+                                , http_idle_timeout =
+                                    hcl-render.helpers.json.optional.duration
+                                      tcp.http_idle_timeout
+                                , http_read_header_timeout =
+                                    hcl-render.helpers.json.optional.duration
+                                      tcp.http_read_header_timeout
+                                , http_read_timeout =
+                                    hcl-render.helpers.json.optional.duration
+                                      tcp.http_read_timeout
+                                , http_write_timeout =
+                                    hcl-render.helpers.json.optional.duration
+                                      tcp.http_write_timeout
+                                , max_request_size =
+                                    hcl-render.helpers.json.optional.natural
+                                      tcp.max_request_size
+                                , proxy_protocol_behavior =
+                                    hcl-render.helpers.json.optional.generic
+                                      TCP.ProxyProtocolBehavior.Type
+                                      ( Prelude.Function.compose
+                                          TCP.ProxyProtocolBehavior.Type
+                                          Text
+                                          JSON.Type
+                                          TCP.ProxyProtocolBehavior.render.behavior.text
+                                          JSON.string
+                                      )
+                                      tcp.proxy_protocol_behavior
+                                , proxy_protocol_authorized_addrs =
+                                    merge
+                                      { Some =
+                                          let addresses =
+                                              {- The merge statement below serves to ensure that:
+                                              -- * This field is omitted (`JSON.null`) when `proxy_protocol_behavior`
+                                              --   is `use_always`
+                                              -- * This field is populated with a list of addresses when
+                                              --   `proxy_protocol_behavior` is either `allow_authorized` or
+                                              --   `deny_unauthorized`, and that such a list is guaranteed to
+                                              --   not be empty.
+                                              -}
+                                                  λ ( ppb
+                                                    : TCP.ProxyProtocolBehavior.Type
+                                                    )
+                                                → let addresses =
+                                                          λ ( addresses
+                                                            : TCP.ProxyProtocolBehavior.Options.Addresses.Type
                                                             )
-                                                        ≡ JSON.array
-                                                            [ JSON.string "foo"
-                                                            ]
-                                                  , deny-unauthorized =
-                                                        assert
-                                                      :   addresses
-                                                            ( TCP.ProxyProtocolBehavior.DenyUnauthorized
-                                                                TCP.ProxyProtocolBehavior.Options.Addresses::{
-                                                                , first = "bar"
-                                                                , additional =
-                                                                  [ "baz" ]
-                                                                }
+                                                        → JSON.array
+                                                            ( Prelude.List.map
+                                                                Text
+                                                                JSON.Type
+                                                                JSON.string
+                                                                (   [ addresses.first
+                                                                    ]
+                                                                  # addresses.additional
+                                                                )
                                                             )
-                                                        ≡ JSON.array
-                                                            [ JSON.string "bar"
-                                                            , JSON.string "baz"
-                                                            ]
-                                                  }
 
-                                            in  addresses
-                                        , None = JSON.null
-                                        }
-                                        tcp.proxy_protocol_behavior
-                                  , tls_disable =
-                                      merge
-                                        { Some =
-                                              λ(_ : TCP.TLS.Type)
-                                            → JSON.string "false"
-                                        , None = JSON.string "true"
-                                        }
-                                        tcp.tls
-                                  , tls_cert_file =
-                                      hcl-render.helpers.json.optional.text
-                                        ( Prelude.Optional.map
-                                            TCP.TLS.Type
-                                            Text
-                                            (   λ(tls : TCP.TLS.Type)
-                                              → tls.cert_file
+                                                  in  merge
+                                                        { UseAlways = JSON.null
+                                                        , AllowAuthorized =
+                                                            addresses
+                                                        , DenyUnauthorized =
+                                                            addresses
+                                                        }
+                                                        ppb
+
+                                          let test =
+                                                { use-always =
+                                                      assert
+                                                    :   addresses
+                                                          TCP.ProxyProtocolBehavior.UseAlways
+                                                      ≡ JSON.null
+                                                , allow-authorized =
+                                                      assert
+                                                    :   addresses
+                                                          ( TCP.ProxyProtocolBehavior.AllowAuthorized
+                                                              TCP.ProxyProtocolBehavior.Options.Addresses::{
+                                                              , first = "foo"
+                                                              }
+                                                          )
+                                                      ≡ JSON.array
+                                                          [ JSON.string "foo" ]
+                                                , deny-unauthorized =
+                                                      assert
+                                                    :   addresses
+                                                          ( TCP.ProxyProtocolBehavior.DenyUnauthorized
+                                                              TCP.ProxyProtocolBehavior.Options.Addresses::{
+                                                              , first = "bar"
+                                                              , additional =
+                                                                [ "baz" ]
+                                                              }
+                                                          )
+                                                      ≡ JSON.array
+                                                          [ JSON.string "bar"
+                                                          , JSON.string "baz"
+                                                          ]
+                                                }
+
+                                          in  addresses
+                                      , None = JSON.null
+                                      }
+                                      tcp.proxy_protocol_behavior
+                                , tls_disable =
+                                    merge
+                                      { Some =
+                                            λ(_ : TCP.TLS.Type)
+                                          → JSON.string "false"
+                                      , None = JSON.string "true"
+                                      }
+                                      tcp.tls
+                                , tls_cert_file =
+                                    hcl-render.helpers.json.optional.text
+                                      ( Prelude.Optional.map
+                                          TCP.TLS.Type
+                                          Text
+                                          (   λ(tls : TCP.TLS.Type)
+                                            → tls.cert_file
+                                          )
+                                          tcp.tls
+                                      )
+                                , tls_key_file =
+                                    hcl-render.helpers.json.optional.text
+                                      ( Prelude.Optional.map
+                                          TCP.TLS.Type
+                                          Text
+                                          (λ(tls : TCP.TLS.Type) → tls.key_file)
+                                          tcp.tls
+                                      )
+                                , tls_min_version =
+                                    hcl-render.helpers.json.optional.generic
+                                      TCP.TLSMinVersion.Type
+                                      ( Prelude.Function.compose
+                                          TCP.TLSMinVersion.Type
+                                          Text
+                                          JSON.Type
+                                          TCP.TLSMinVersion.render
+                                          JSON.string
+                                      )
+                                      tcp.tls_min_version
+                                , tls_cipher_suites =
+                                          if Prelude.List.null
+                                               TCP.TLSCipherSuite.Type
+                                               tcp.tls_cipher_suites
+
+                                    then  JSON.null
+
+                                    else  JSON.array
+                                            ( Prelude.List.map
+                                                TCP.TLSCipherSuite.Type
+                                                JSON.Type
+                                                ( Prelude.Function.compose
+                                                    TCP.TLSCipherSuite.Type
+                                                    Text
+                                                    JSON.Type
+                                                    TCP.TLSCipherSuite.render
+                                                    JSON.string
+                                                )
+                                                tcp.tls_cipher_suites
                                             )
-                                            tcp.tls
-                                        )
-                                  , tls_key_file =
-                                      hcl-render.helpers.json.optional.text
-                                        ( Prelude.Optional.map
-                                            TCP.TLS.Type
-                                            Text
-                                            (   λ(tls : TCP.TLS.Type)
-                                              → tls.key_file
+                                , tls_prefer_server_cipher_suites =
+                                    hcl-render.helpers.json.optional.bool
+                                      tcp.tls_prefer_server_cipher_suites
+                                , tls_require_and_verify_client_cert =
+                                    hcl-render.helpers.json.optional.bool
+                                      tcp.tls_require_and_verify_client_cert
+                                , tls_client_ca_file =
+                                    hcl-render.helpers.json.optional.text
+                                      tcp.tls_client_ca_file
+                                , tls_disable_client_certs =
+                                    hcl-render.helpers.json.optional.bool
+                                      tcp.tls_disable_client_certs
+                                , x_forwarded_for_authorized_addrs =
+                                          if Prelude.List.null
+                                               Text
+                                               tcp.x_forwarded_for_authorized_addrs
+
+                                    then  JSON.null
+
+                                    else  JSON.array
+                                            ( Prelude.List.map
+                                                Text
+                                                JSON.Type
+                                                JSON.string
+                                                tcp.x_forwarded_for_authorized_addrs
                                             )
-                                            tcp.tls
-                                        )
-                                  , tls_min_version =
-                                      hcl-render.helpers.json.optional.generic
-                                        TCP.TLSMinVersion.Type
-                                        ( Prelude.Function.compose
-                                            TCP.TLSMinVersion.Type
-                                            Text
-                                            JSON.Type
-                                            TCP.TLSMinVersion.render
-                                            JSON.string
-                                        )
-                                        tcp.tls_min_version
-                                  , tls_cipher_suites =
-                                            if Prelude.List.null
-                                                 TCP.TLSCipherSuite.Type
-                                                 tcp.tls_cipher_suites
-
-                                      then  JSON.null
-
-                                      else  JSON.array
-                                              ( Prelude.List.map
-                                                  TCP.TLSCipherSuite.Type
-                                                  JSON.Type
-                                                  ( Prelude.Function.compose
-                                                      TCP.TLSCipherSuite.Type
-                                                      Text
-                                                      JSON.Type
-                                                      TCP.TLSCipherSuite.render
-                                                      JSON.string
-                                                  )
-                                                  tcp.tls_cipher_suites
-                                              )
-                                  , tls_prefer_server_cipher_suites =
-                                      hcl-render.helpers.json.optional.bool
-                                        tcp.tls_prefer_server_cipher_suites
-                                  , tls_require_and_verify_client_cert =
-                                      hcl-render.helpers.json.optional.bool
-                                        tcp.tls_require_and_verify_client_cert
-                                  , tls_client_ca_file =
-                                      hcl-render.helpers.json.optional.text
-                                        tcp.tls_client_ca_file
-                                  , tls_disable_client_certs =
-                                      hcl-render.helpers.json.optional.bool
-                                        tcp.tls_disable_client_certs
-                                  , x_forwarded_for_authorized_addrs =
-                                            if Prelude.List.null
-                                                 Text
-                                                 tcp.x_forwarded_for_authorized_addrs
-
-                                      then  JSON.null
-
-                                      else  JSON.array
-                                              ( Prelude.List.map
-                                                  Text
-                                                  JSON.Type
-                                                  JSON.string
-                                                  tcp.x_forwarded_for_authorized_addrs
-                                              )
-                                  , x_forwarded_for_hop_skips =
-                                      hcl-render.helpers.json.optional.natural
-                                        tcp.x_forwarded_for_hop_skips
-                                  , x_forwarded_for_reject_not_authorized =
-                                      hcl-render.helpers.json.optional.bool
-                                        tcp.x_forwarded_for_reject_not_authorized
-                                  , x_forwarded_for_reject_not_present =
-                                      hcl-render.helpers.json.optional.bool
-                                        tcp.x_forwarded_for_reject_not_present
-                                  , telemetry =
-                                      hcl-render.helpers.json.optional.generic
-                                        TCP.Telemetry.Type
-                                        (   λ(telemetry : TCP.Telemetry.Type)
-                                          → hcl-render.helpers.json.optional.bool
-                                              telemetry.unauthenticated_metrics_access
-                                        )
-                                        tcp.telemetry
-                                  }
-                              )
-                      }
+                                , x_forwarded_for_hop_skips =
+                                    hcl-render.helpers.json.optional.natural
+                                      tcp.x_forwarded_for_hop_skips
+                                , x_forwarded_for_reject_not_authorized =
+                                    hcl-render.helpers.json.optional.bool
+                                      tcp.x_forwarded_for_reject_not_authorized
+                                , x_forwarded_for_reject_not_present =
+                                    hcl-render.helpers.json.optional.bool
+                                      tcp.x_forwarded_for_reject_not_present
+                                , telemetry =
+                                    hcl-render.helpers.json.optional.generic
+                                      TCP.Telemetry.Type
+                                      (   λ(telemetry : TCP.Telemetry.Type)
+                                        → hcl-render.helpers.json.optional.bool
+                                            telemetry.unauthenticated_metrics_access
+                                      )
+                                      tcp.telemetry
+                                }
+                            )
+                    }
                   }
 
       in  { TCP = TCP }
@@ -593,7 +589,9 @@ let tests =
                 ( JSON.omitNullFields
                     (render.json (Listener.TCP Options.TCP::{=}))
                 )
-            ≡ "{ \"tcp\": { \"tls_disable\": \"true\" } }"
+            ≡ ''
+              { "tcp": { "tls_disable": "true" } }
+              ''
       , tls =
             assert
           :   JSON.render
@@ -609,7 +607,15 @@ let tests =
                         )
                     )
                 )
-            ≡ "{ \"tcp\": { \"tls_cert_file\": \"/etc/certs/vault.crt\", \"tls_disable\": \"false\", \"tls_key_file\": \"/etc/certs/vault.key\" } }"
+            ≡ ''
+              {
+                "tcp": {
+                  "tls_cert_file": "/etc/certs/vault.crt",
+                  "tls_disable": "false",
+                  "tls_key_file": "/etc/certs/vault.key"
+                }
+              }
+              ''
       , proxy_protocol_behavior =
             assert
           :   JSON.render
@@ -628,7 +634,18 @@ let tests =
                         )
                     )
                 )
-            ≡ "{ \"tcp\": { \"proxy_protocol_authorized_addrs\": [ \"foo\", \"bar\" ], \"proxy_protocol_behavior\": \"allow_authorized\", \"tls_disable\": \"true\" } }"
+            ≡ ''
+              {
+                "tcp": {
+                  "proxy_protocol_authorized_addrs": [
+                    "foo",
+                    "bar"
+                  ],
+                  "proxy_protocol_behavior": "allow_authorized",
+                  "tls_disable": "true"
+                }
+              }
+              ''
       }
 
 let exports =

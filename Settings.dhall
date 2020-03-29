@@ -17,13 +17,13 @@ let metadata = ./metadata.dhall
 let ConfigTemplate =
       let Options =
             { AWS-Simple =
-                { Type =
-                    { credentials : { access-key : Text, secret-key : Text }
-                    , s3 : { bucket : Text }
-                    , kms : { key-id : Text }
-                    }
-                , default = {=}
-                }
+              { Type =
+                  { credentials : { access-key : Text, secret-key : Text }
+                  , s3 : { bucket : Text }
+                  , kms : { key-id : Text }
+                  }
+              , default = {=}
+              }
             }
 
       let ConfigTemplate =
@@ -54,9 +54,9 @@ let Port = { Type = { name : Text, number : Natural }, default = {=} }
 let ServiceMonitor =
       let Options =
             { Enabled =
-                { Type = { scrape-identifier : Prelude.Map.Type Text Text }
-                , default = {=}
-                }
+              { Type = { scrape-identifier : Prelude.Map.Type Text Text }
+              , default = {=}
+              }
             }
 
       let ServiceMonitor = < Enabled : Options.Enabled.Type | Disabled >
@@ -83,25 +83,25 @@ let Settings =
                 , service-monitor : ServiceMonitor.Type
                 }
             , default =
-                { config.override =
-                    Prelude.Function.identity Config.VaultConfig.Type
-                , namespace = None Text
-                , additional-labels = Prelude.Map.empty Text Text
-                , image =
-                    Image.Tag
-                      { registry = "registry.hub.docker.com"
-                      , name = "library/vault"
-                      , tag = metadata.version.vault
-                      }
-                , ports =
-                    { api = Port::{ name = "api", number = 8200 }
-                    , cluster-coordination = Port::{
-                      , name = "cluster-coordination"
-                      , number = 8201
-                      }
+              { config.override =
+                  Prelude.Function.identity Config.VaultConfig.Type
+              , namespace = None Text
+              , additional-labels = Prelude.Map.empty Text Text
+              , image =
+                  Image.Tag
+                    { registry = "registry.hub.docker.com"
+                    , name = "library/vault"
+                    , tag = metadata.version.vault
                     }
-                , service-monitor = ServiceMonitor.Disabled
+              , ports =
+                { api = Port::{ name = "api", number = 8200 }
+                , cluster-coordination = Port::{
+                  , name = "cluster-coordination"
+                  , number = 8201
+                  }
                 }
+              , service-monitor = ServiceMonitor.Disabled
+              }
             }
 
       let common =
@@ -236,24 +236,24 @@ let Settings =
                 let settings =
                       Settings::{
                       , config =
-                          { template =
-                              ConfigTemplate.AWS-Simple
-                                ConfigTemplate.Options.AWS-Simple::{
-                                , credentials =
-                                      { access-key = "access" }
-                                    ∧ { secret-key = "secret" }
-                                , s3.bucket = "foo-bucket"
-                                , kms.key-id = "bar-key"
-                                }
-                          , override =
-                                λ(config : Config.VaultConfig.Type)
-                              → config ⫽ { ui = Some True }
-                          }
+                        { template =
+                            ConfigTemplate.AWS-Simple
+                              ConfigTemplate.Options.AWS-Simple::{
+                              , credentials =
+                                    { access-key = "access" }
+                                  ∧ { secret-key = "secret" }
+                              , s3.bucket = "foo-bucket"
+                              , kms.key-id = "bar-key"
+                              }
+                        , override =
+                              λ(config : Config.VaultConfig.Type)
+                            → config ⫽ { ui = Some True }
+                        }
                       , ports =
-                          { api = { name = "api", number = 8300 }
-                          , cluster-coordination =
-                              { name = "cluster-coordination", number = 8301 }
-                          }
+                        { api = { name = "api", number = 8300 }
+                        , cluster-coordination =
+                          { name = "cluster-coordination", number = 8301 }
+                        }
                       }
 
                 let built-config =
