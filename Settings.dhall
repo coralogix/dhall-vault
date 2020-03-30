@@ -17,13 +17,19 @@ let metadata = ./metadata.dhall
 let ConfigTemplate =
       let Options =
             { AWS-Simple =
-              { Type =
-                  { credentials : { access-key : Text, secret-key : Text }
-                  , s3 : { bucket : Text }
-                  , kms : { key-id : Text }
-                  }
-              , default = {=}
-              }
+                let Credentials =
+                      { Type = { access-key : Text, secret-key : Text }
+                      , default = {=}
+                      }
+
+                in  { Type =
+                        { credentials : Optional Credentials.Type
+                        , s3 : { bucket : Text }
+                        , kms : { key-id : Text }
+                        }
+                    , default = {=}
+                    , Credentials = Credentials
+                    }
             }
 
       let ConfigTemplate =
@@ -240,8 +246,8 @@ let Settings =
                             ConfigTemplate.AWS-Simple
                               ConfigTemplate.Options.AWS-Simple::{
                               , credentials =
-                                    { access-key = "access" }
-                                  ∧ { secret-key = "secret" }
+                                  None
+                                    ConfigTemplate.Options.AWS-Simple.Credentials.Type
                               , s3.bucket = "foo-bucket"
                               , kms.key-id = "bar-key"
                               }
@@ -261,7 +267,7 @@ let Settings =
                       , storage =
                           Config.StorageBackend.All.S3
                             Config.StorageBackend.Options.S3::{
-                            , bucket = "foo-bucket"
+                            , bucket = Some "foo-bucket"
                             }
                       , listener =
                           Config.Listener.TCP
@@ -274,7 +280,7 @@ let Settings =
                       , seal = Some
                           ( Config.Seal.AWS-KMS
                               Config.Seal.Options.AWS-KMS::{
-                              , kms_key_id = "bar-key"
+                              , kms_key_id = Some "bar-key"
                               }
                           )
                       , log_level = Some "info"

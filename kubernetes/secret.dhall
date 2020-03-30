@@ -4,19 +4,17 @@ let Kubernetes = imports.Kubernetes
 
 let Settings = ../Settings.dhall
 
-in    λ(settings : Settings.Type)
+in    λ(metadata : Kubernetes.ObjectMeta.Type)
+    → λ ( credentials
+        : Settings.ConfigTemplate.Options.AWS-Simple.Credentials.Type
+        )
     → Kubernetes.Secret::{
-      , metadata = Settings.common.kubernetes.metadata.object-meta settings
+      , metadata = metadata
       , type = Some "Opaque"
       , stringData = Some
-          ( merge
-              { AWS-Simple =
-                    λ(options : Settings.ConfigTemplate.Options.AWS-Simple.Type)
-                  → toMap
-                      { AWS_ACCESS_KEY_ID = options.credentials.access-key
-                      , AWS_SECRET_ACCESS_KEY = options.credentials.secret-key
-                      }
+          ( toMap
+              { AWS_ACCESS_KEY_ID = credentials.access-key
+              , AWS_SECRET_ACCESS_KEY = credentials.secret-key
               }
-              settings.config.template
           )
       }

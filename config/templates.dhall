@@ -28,12 +28,12 @@ let aws =
                     , storage =
                         StorageBackend.All.S3
                           StorageBackend.Options.S3::{
-                          , bucket = parameters.s3.bucket
+                          , bucket = Some parameters.s3.bucket
                           }
                     , seal = Some
                         ( Seal.AWS-KMS
                             Seal.Options.AWS-KMS::{
-                            , kms_key_id = parameters.kms.key-id
+                            , kms_key_id = Some parameters.kms.key-id
                             }
                         )
                     , log_level = Some "info"

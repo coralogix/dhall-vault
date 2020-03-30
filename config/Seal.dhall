@@ -25,7 +25,7 @@ let Options =
                       , access_key : Optional Text
                       , session_token : Optional Text
                       , secret_key : Optional Text
-                      , kms_key_id : Text
+                      , kms_key_id : Optional Text
                       , endpoint : Optional Text
                       }
                   , default =
@@ -56,7 +56,9 @@ let Options =
                                 , secret_key =
                                     hcl-render.helpers.json.optional.text
                                       aws-kms.secret_key
-                                , kms_key_id = JSON.string aws-kms.kms_key_id
+                                , kms_key_id =
+                                    hcl-render.helpers.json.optional.text
+                                      aws-kms.kms_key_id
                                 , endpoint =
                                     hcl-render.helpers.json.optional.text
                                       aws-kms.endpoint
@@ -87,7 +89,7 @@ let test =
                 ( JSON.omitNullFields
                     ( render.json
                         ( Seal.AWS-KMS
-                            Options.AWS-KMS::{ kms_key_id = "example" }
+                            Options.AWS-KMS::{ kms_key_id = Some "example" }
                         )
                     )
                 )

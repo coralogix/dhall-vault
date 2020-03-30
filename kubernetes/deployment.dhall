@@ -11,7 +11,9 @@ let Image = UtilityLibrary.kubernetes.Image
 let Settings = ../Settings.dhall
 
 in    λ(settings : Settings.Type)
-    → λ(references : { configmap : { name : Text }, secret : { name : Text } })
+    → λ ( references
+        : { configmap : { name : Text }, secret : { name : Optional Text } }
+        )
     → Kubernetes.Deployment::{
       , metadata = Settings.common.kubernetes.metadata.object-meta settings
       , spec = Some Kubernetes.DeploymentSpec::{
@@ -94,29 +96,37 @@ in    λ(settings : Settings.Type)
                                         λ ( options
                                           : Settings.ConfigTemplate.Options.AWS-Simple.Type
                                           )
-                                      → [ Kubernetes.EnvVar::{
-                                          , name = "AWS_ACCESS_KEY_ID"
-                                          , valueFrom = Some Kubernetes.EnvVarSource::{
-                                            , secretKeyRef = Some Kubernetes.SecretKeySelector::{
-                                              , name = Some
-                                                  references.secret.name
-                                              , key = "AWS_ACCESS_KEY_ID"
-                                              , optional = Some False
-                                              }
-                                            }
+                                      → merge
+                                          { Some =
+                                                λ(secret-name : Text)
+                                              → [ Kubernetes.EnvVar::{
+                                                  , name = "AWS_ACCESS_KEY_ID"
+                                                  , valueFrom = Some Kubernetes.EnvVarSource::{
+                                                    , secretKeyRef = Some Kubernetes.SecretKeySelector::{
+                                                      , name = Some secret-name
+                                                      , key =
+                                                          "AWS_ACCESS_KEY_ID"
+                                                      , optional = Some False
+                                                      }
+                                                    }
+                                                  }
+                                                , Kubernetes.EnvVar::{
+                                                  , name =
+                                                      "AWS_SECRET_ACCESS_KEY"
+                                                  , valueFrom = Some Kubernetes.EnvVarSource::{
+                                                    , secretKeyRef = Some Kubernetes.SecretKeySelector::{
+                                                      , name = Some secret-name
+                                                      , key =
+                                                          "AWS_SECRET_ACCESS_KEY"
+                                                      , optional = Some False
+                                                      }
+                                                    }
+                                                  }
+                                                ]
+                                          , None =
+                                              [] : List Kubernetes.EnvVar.Type
                                           }
-                                        , Kubernetes.EnvVar::{
-                                          , name = "AWS_SECRET_ACCESS_KEY"
-                                          , valueFrom = Some Kubernetes.EnvVarSource::{
-                                            , secretKeyRef = Some Kubernetes.SecretKeySelector::{
-                                              , name = Some
-                                                  references.secret.name
-                                              , key = "AWS_SECRET_ACCESS_KEY"
-                                              , optional = Some False
-                                              }
-                                            }
-                                          }
-                                        ]
+                                          references.secret.name
                                   }
                                   settings.config.template
                             )

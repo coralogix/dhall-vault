@@ -112,7 +112,7 @@ let Options =
       let S3 =
             let S3 =
                   { Type =
-                      { bucket : Text
+                      { bucket : Optional Text
                       , endpoint : Optional Text
                       , region : Optional Text
                       , access_key : Optional Text
@@ -125,7 +125,8 @@ let Options =
                       , path : Optional Text
                       }
                   , default =
-                    { endpoint = None Text
+                    { bucket = None Text
+                    , endpoint = None Text
                     , region = None Text
                     , access_key = None Text
                     , secret_key = None Text
@@ -138,8 +139,6 @@ let Options =
                     }
                   }
 
-            let test = { create-minimal = S3::{ bucket = "example" } }
-
             let render =
                   let render =
                         { hcl-type = λ(_ : S3.Type) → "s3"
@@ -147,7 +146,9 @@ let Options =
                               λ(s3 : S3.Type)
                             → JSON.object
                                 ( toMap
-                                    { bucket = JSON.string s3.bucket
+                                    { bucket =
+                                        hcl-render.helpers.json.optional.text
+                                          s3.bucket
                                     , endpoint =
                                         hcl-render.helpers.json.optional.text
                                           s3.endpoint
@@ -187,7 +188,7 @@ let Options =
                               assert
                             :   JSON.render
                                   ( JSON.omitNullFields
-                                      (render.json S3::{ bucket = "foo" })
+                                      (render.json S3::{ bucket = Some "foo" })
                                   )
                               ≡ ''
                                 { "bucket": "foo" }
