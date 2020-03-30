@@ -27,7 +27,7 @@ let ConfigTemplate =
                         , s3 : { bucket : Text }
                         , kms : { key-id : Text }
                         }
-                    , default = {=}
+                    , default.credentials = None Credentials.Type
                     , Credentials = Credentials
                     }
             }
