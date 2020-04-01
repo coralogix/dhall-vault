@@ -38,7 +38,7 @@ let Options =
                                     , default.additional = [] : List Text
                                     }
 
-                              in  { Addresses = Addresses }
+                              in  { Addresses }
 
                         let ProxyProtocolBehavior =
                             {- The `proxy_protocol_behavior` field has three
@@ -71,7 +71,7 @@ let Options =
                                     λ(addresses : Options.Addresses.Type)
                                   → ProxyProtocolBehavior.DenyUnauthorized
                                       addresses
-                              , Options = Options
+                              , Options
                               , render.behavior.text =
                                     λ(ppb : ProxyProtocolBehavior)
                                   → merge
@@ -220,8 +220,7 @@ let Options =
                                   TLSCipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
                               , TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256 =
                                   TLSCipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
-                              , recommended-secure-defaults =
-                                  recommended-secure-defaults
+                              , recommended-secure-defaults
                               , render =
                                     λ(value : TLSCipherSuite)
                                   → merge
@@ -341,11 +340,11 @@ let Options =
                         , x_forwarded_for_reject_not_present = None Bool
                         , telemetry = None Telemetry.Type
                         }
-                      , ProxyProtocolBehavior = ProxyProtocolBehavior
-                      , TLS = TLS
-                      , TLSMinVersion = TLSMinVersion
-                      , TLSCipherSuite = TLSCipherSuite
-                      , Telemetry = Telemetry
+                      , ProxyProtocolBehavior
+                      , TLS
+                      , TLSMinVersion
+                      , TLSCipherSuite
+                      , Telemetry
                       }
 
             in    TCP
@@ -567,7 +566,7 @@ let Options =
                     }
                   }
 
-      in  { TCP = TCP }
+      in  { TCP }
 
 let Listener = < TCP : Options.TCP.Type >
 
@@ -651,8 +650,8 @@ let tests =
 let exports =
       { Type = Listener
       , TCP = λ(tcp : Options.TCP.Type) → Listener.TCP tcp
-      , Options = Options
-      , render = render
+      , Options
+      , render
       }
 
 in  exports

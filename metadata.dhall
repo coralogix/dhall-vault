@@ -1,5 +1,5 @@
 { name = "dhall-vault"
-, version = { vault = "1.3.3", package = "3" }
+, version = { vault = "1.3.3", package = "4" }
 , description = "Dhall package for Hashicorp Vault"
 , repository =
   { type = "git", url = "git+ssh://git@github.com/coralogix/dhall-vault.git" }

@@ -32,7 +32,7 @@ let LogFormat =
                       λ(value : LogFormat)
                     → merge { Standard = "standard", JSON = "json" } value
 
-              in  { text = text
+              in  { text
                   , json = λ(value : LogFormat) → JSON.string (text value)
                   }
           }
@@ -195,6 +195,6 @@ let tests =
               ''
       }
 
-let exports = VaultConfig ∧ { LogFormat = LogFormat }
+let exports = VaultConfig ∧ { LogFormat }
 
 in  exports

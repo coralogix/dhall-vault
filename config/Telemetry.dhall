@@ -53,7 +53,7 @@ let Providers =
                           }
                   }
 
-      in  { Prometheus = Prometheus }
+      in  { Prometheus }
 
 let Telemetry =
       let Telemetry =
@@ -112,6 +112,6 @@ let Telemetry =
                 in  render
             }
 
-let exports = Telemetry ∧ { Common = Common, Providers = Providers }
+let exports = Telemetry ∧ { Common, Providers }
 
 in  exports

@@ -20,7 +20,7 @@ let aws =
                 , default = {=}
                 }
 
-          in  { Parameters = Parameters
+          in  { Parameters
               , build =
                     λ(parameters : Parameters.Type)
                   → VaultConfig::{
@@ -41,6 +41,6 @@ let aws =
               }
       }
 
-let exports = { aws = aws }
+let exports = { aws }
 
 in  exports

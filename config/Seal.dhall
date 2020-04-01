@@ -67,7 +67,7 @@ let Options =
                     }
                   }
 
-      in  { AWS-KMS = AWS-KMS }
+      in  { AWS-KMS }
 
 let Seal = < AWS-KMS : Options.AWS-KMS.Type >
 
@@ -109,8 +109,8 @@ let exports =
     -}
       { Type = Seal
       , AWS-KMS = λ(value : Options.AWS-KMS.Type) → Seal.AWS-KMS value
-      , Options = Options
-      , render = render
+      , Options
+      , render
       }
 
 in  exports

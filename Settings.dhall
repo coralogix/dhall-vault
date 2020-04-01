@@ -28,7 +28,7 @@ let ConfigTemplate =
                         , kms : { key-id : Text }
                         }
                     , default.credentials = None Credentials.Type
-                    , Credentials = Credentials
+                    , Credentials
                     }
             }
 
@@ -50,7 +50,7 @@ let ConfigTemplate =
             , AWS-Simple =
                   λ(options : Options.AWS-Simple.Type)
                 → ConfigTemplate.AWS-Simple options
-            , Options = Options
+            , Options
             }
 
       in  exports
@@ -71,7 +71,7 @@ let ServiceMonitor =
           , Enabled =
               λ(enabled : Options.Enabled.Type) → ServiceMonitor.Enabled enabled
           , Disabled = ServiceMonitor.Disabled
-          , Options = Options
+          , Options
           }
 
 let Settings =
@@ -216,10 +216,7 @@ let Settings =
                                       , kubernetes-standard.version
                                       ]
 
-                            in  { kubernetes-standard = kubernetes-standard
-                                , selector = selector
-                                , package = package
-                                }
+                            in  { kubernetes-standard, selector, package }
 
                       let object-meta =
                               λ(settings : Settings.Type)
@@ -229,13 +226,10 @@ let Settings =
                               , labels = Some (labels.package settings)
                               }
 
-                      in  { name = name
-                          , labels = labels
-                          , object-meta = object-meta
-                          }
+                      in  { name, labels, object-meta }
                   }
 
-            in  { config = config, kubernetes = kubernetes }
+            in  { config, kubernetes }
 
       let tests =
             { config =
@@ -290,13 +284,8 @@ let Settings =
                 in  assert : common.config settings ≡ built-config
             }
 
-      in  Settings ∧ { common = common }
+      in  Settings ∧ { common }
 
-let exports =
-        Settings
-      ∧ { ConfigTemplate = ConfigTemplate
-        , Port = Port
-        , ServiceMonitor = ServiceMonitor
-        }
+let exports = Settings ∧ { ConfigTemplate, Port, ServiceMonitor }
 
 in  exports

@@ -49,12 +49,12 @@ in    λ(settings : Settings.Type)
 
       let service-monitor = ./servicemonitor.dhall settings
 
-      in  { poddisruptionbudget = poddisruptionbudget
-          , configmap = configmap
-          , secret = secret
-          , deployment = deployment
-          , service = service
-          , service-monitor = service-monitor
+      in  { poddisruptionbudget
+          , configmap
+          , secret
+          , deployment
+          , service
+          , service-monitor
           , objects =
                 [ "poddisruptionbudget", "configmap" ]
               # merge

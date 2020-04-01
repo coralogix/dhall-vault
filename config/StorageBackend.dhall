@@ -40,7 +40,7 @@ let Options =
 
                   in  render
 
-            in  Filesystem ∧ { render = render }
+            in  Filesystem ∧ { render }
 
       let InMemory =
             let InMemory = { Type = {}, default = {=} }
@@ -67,7 +67,7 @@ let Options =
 
                   in  render
 
-            in  InMemory ∧ { render = render }
+            in  InMemory ∧ { render }
 
       let Raft =
             let Raft = { Type = { path : Text, node_id : Text }, default = {=} }
@@ -107,7 +107,7 @@ let Options =
 
                   in  render
 
-            in  Raft ∧ { render = render }
+            in  Raft ∧ { render }
 
       let S3 =
             let S3 =
@@ -197,9 +197,9 @@ let Options =
 
                   in  render
 
-            in  S3 ∧ { render = render }
+            in  S3 ∧ { render }
 
-      in  { Filesystem = Filesystem, InMemory = InMemory, Raft = Raft, S3 = S3 }
+      in  { Filesystem, InMemory, Raft, S3 }
 
 let All =
     {- The parent configuration file requires a `storage` block, which configures where
@@ -255,7 +255,7 @@ let All =
             , InMemory = λ(value : Options.InMemory.Type) → All.InMemory value
             , Raft = λ(value : Options.Raft.Type) → All.Raft value
             , S3 = λ(value : Options.S3.Type) → All.S3 value
-            , render = render
+            , render
             }
 
       in  exports
@@ -284,10 +284,9 @@ let HighAvailability =
 
       in  { Type = HighAvailability
           , Raft = λ(value : Options.Raft.Type) → HighAvailability.Raft value
-          , render = render
+          , render
           }
 
-let exports =
-      { All = All, HighAvailability = HighAvailability, Options = Options }
+let exports = { All, HighAvailability, Options }
 
 in  exports
